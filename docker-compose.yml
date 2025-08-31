@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  automation-system:
+    build: .
+    container_name: intelligent-automation-system
+    volumes:
+      - ./config:/app/config
+      - ./logs:/app/logs
+      - ./memory.db:/app/memory.db
+      - ./automation.db:/app/automation.db
+    environment:
+      - PYTHONUNBUFFERED=1
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+
+  # Example of a separate service for testing integrations
+  test-database:
+    image: postgres:13-alpine
+    container_name: test-postgres-db
+    environment:
+      POSTGRES_DB: test_automation
+      POSTGRES_USER: test_user
+      POSTGRES_PASSWORD: test_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  version: "3.9"
+
+services:
+  # --- Seu sistema atual ---
+  app:
+    build: .
+    container_name: projeto-app
+    restart: always
+    volumes:
+      - ./src:/app/src
+      - ./logs:/app/logs
+    command: ["python", "-m", "src.main"]
+    depends_on:
+      - waha
+
+  # --- WhatsApp HTTP API (com interface QR Code) ---
+  waha:
+    image: devlikeapro/whatsapp-http-api:latest
+    container_name: waha
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./waha_data:/app/data
+    environment:
+      - WHATSAPP_API_KEY=123456       # chave para acessar a API
+      - WHATSAPP_START_SESSION=true   # inicia a sessão automaticamente
+
+volumes:
+  waha_data:

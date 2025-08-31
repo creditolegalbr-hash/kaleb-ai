@@ -1,0 +1,48 @@
+agents:
+  document: true
+  email: true
+  finance: true
+  scheduler: true
+  support: true
+error_handling:
+  notifications:
+    critical_errors: true
+  retry:
+    backoff_factor: 1.0
+    jitter: true
+    max_retries: 3
+integrations:
+  database:
+    enabled: true
+    max_connections: 10
+    path: automation.db
+  email:
+    enabled: true
+    max_rate_limit: 50
+logging:
+  backup_count: 5
+  console_output: true
+  file_path: logs/automation.log
+  level: INFO
+  max_bytes: 10485760
+memory:
+  context_manager:
+    max_history: 100
+  memory_store:
+    path: memory.db
+    type: sqlite
+pipelines:
+  document:
+    enabled: true
+  email:
+    enabled: true
+  finance:
+    enabled: true
+  scheduler:
+    enabled: true
+  support:
+    enabled: true
+system:
+  debug: false
+  name: kaleb
+  version: 1.0.0

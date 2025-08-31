@@ -1,0 +1,13 @@
+flowchart TD
+    A[Entrada do Usuário] --> B{Agente Principal}
+    B -->|Email| C[EmailAgent]
+    B -->|Financeiro| D[FinanceAgent]
+    B -->|Agendamento| E[SchedulerAgent]
+    B -->|Documentos| F[DocumentAgent]
+    B -->|Suporte| G[SupportAgent]
+
+    C --> H[Pipeline de Email]
+    D --> I[Pipeline Financeiro]
+    E --> J[Pipeline de Agendamento]
+    F --> K[Pipeline Documentos]
+    G --> L[Pipeline Suporte]

@@ -1,0 +1,26 @@
+{
+  "name": "projeto",
+  "version": "1.0.0",
+  "description": "Este projeto implementa um sistema de automação inteligente com agentes especializados e pipelines para processamento de tarefas automatizadas.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "eslint": "^9.34.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "prettier": "^3.6.2"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.1"
+  }
+}

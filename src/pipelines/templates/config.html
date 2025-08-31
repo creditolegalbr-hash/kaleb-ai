@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>System Configuration</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .container { max-width: 800px; margin: auto; }
+        form { display: grid; grid-template-columns: 200px 350px; gap: 15px; margin-bottom: 40px; }
+        label { font-weight: bold; }
+        input { width: 100%; padding: 8px; }
+        button { grid-column: 2; padding: 10px 15px; width: 150px; cursor: pointer; }
+        h2 { grid-column: 1 / -1; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
+        ul { list-style-type: none; padding: 0; }
+        li { background-color: #f4f4f4; border: 1px solid #ddd; padding: 10px; margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>System Configuration</h1>
+        
+        <!-- Formulário para Configurações do Sistema -->
+        <form method="post">
+            <h2>System Settings</h2>
+            <label for="system.name">System Name</label>
+            <input type="text" id="system.name" name="system.name" value="{{ config.system.get('name', '') }}">
+
+            <label for="system.version">System Version</label>
+            <input type="text" id="system.version" name="system.version" value="{{ config.system.get('version', '') }}">
+            
+            <h2>Logging Settings</h2>
+            <label for="logging.level">Logging Level</label>
+            <input type="text" id="logging.level" name="logging.level" value="{{ config.logging.get('level', 'INFO') }}">
+            
+            <label for="logging.file_path">Log File Path</label>
+            <input type="text" id="logging.file_path" name="logging.file_path" value="{{ config.logging.get('file_path', '') }}">
+            
+            <div></div><!-- Empty cell for alignment -->
+            <button type="submit">Save Configuration</button>
+        </form>
+
+        <!-- Seção da Base de Conhecimento -->
+        <div>
+            <h2>Knowledge Base</h2>
+            <!-- Formulário para Upload de Arquivos -->
+            <form method="post" enctype="multipart/form-data">
+                <label for="knowledge_file">Upload New File</label>
+                <input type="file" id="knowledge_file" name="knowledge_file">
+                <button type="submit">Upload</button>
+            </form>
+
+            <h3>Current Files:</h3>
+            <ul>
+                {% for file in knowledge_files %}
+                    <li>{{ file }}</li>
+                {% else %}
+                    <li>No files in the knowledge base yet.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

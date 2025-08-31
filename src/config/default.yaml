@@ -1,0 +1,10 @@
+system:
+  name: Kaleb
+  version: 1.0.0
+
+logging:
+  level: INFO
+  file_path: logs/automation.log
+
+knowledge_base:
+  path: 'knowledge_base/'

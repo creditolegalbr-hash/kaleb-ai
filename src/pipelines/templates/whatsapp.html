@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Connect WhatsApp</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        button { font-size: 18px; padding: 12px 20px; cursor: pointer; }
+        #status { margin-top: 20px; font-style: italic; }
+    </style>
+</head>
+<body>
+    <h1>Connect to WhatsApp</h1>
+    <p>Click the button below. A new Chrome browser window will open.</p>
+    <p>If it's your first time, you will need to scan the QR code with your phone.</p>
+    <p><b>Your session will be saved</b>, so you won't need to scan the QR code every time you start the system.</p>
+    
+    <button onclick="startSession()">Open WhatsApp Session</button>
+    <p id="status"></p>
+
+    <script>
+        function startSession() {
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = 'Starting...';
+            
+            fetch('/start_whatsapp')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'Success') {
+                        statusEl.textContent = 'A browser window should now be open. Please check for it.';
+                    } else {
+                        statusEl.textContent = 'An error occurred.';
+                    }
+                });
+        }
+    </script>
+</body>
+</html>

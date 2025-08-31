@@ -1,0 +1,7 @@
+venv/
+logs/
+waha_data/
+whatsapp_session/
+knowledge_base/
+knowledge_base_index.faiss
+knowledge_base_metadata.pkl

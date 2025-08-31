@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <!-- ... (head, sem mudanças) ... -->
+    <style>
+        /* ... (estilos, sem mudanças) ... */
+        .qr-container { min-height: 250px; display: flex; align-items: center; justify-content: center; background-color: #f0f2f5; border-radius: .5rem; }
+    </style>
+</head>
+<body>
+<nav class="navbar ...">
+    <!-- ... (navbar, sem mudanças) ... -->
+</nav>
+<div class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        <!-- ... (mensagens flash, sem mudanças) ... -->
+    {% endwith %}
+
+    <div class="row">
+        <!-- Coluna da Esquerda: Chat -->
+        <div class="col-lg-7">
+            <!-- ... (card do chat, sem mudanças) ... -->
+        </div>
+
+        <!-- Coluna da Direita: Configurações -->
+        <div class="col-lg-5">
+            <!-- INÍCIO DO CARD FINAL DE WHATSAPP -->
+            <div class="card">
+                 <div class="card-header"><h5 class="card-title mb-0"><i class="fab fa-whatsapp"></i> Conexão WhatsApp</h5></div>
+                <div class="card-body">
+                    <p>Clique em "Iniciar Conexão" para gerar um QR Code abaixo. Escaneie com seu celular para conectar.</p>
+                    <a href="/start_whatsapp_connection" id="connect-btn" class="btn btn-success w-100 mb-3">
+                        <i class="fas fa-qrcode"></i> Gerar QR Code
+                    </a>
+                    <div id="qr-wrapper" class="qr-container p-3">
+                        <div id="qr-status" class="text-center">
+                            <p class="text-muted">O QR Code aparecerá aqui.</p>
+                            <div class="spinner-border text-secondary" role="status" style="display: none;">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- FIM DO CARD FINAL DE WHATSAPP -->
+
+            <!-- ... (Card da Base de Conhecimento, sem mudanças) -->
+            <!-- ... (Card de Configurações do Sistema, sem mudanças) -->
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // --- SCRIPT FINAL DO WHATSAPP QR CODE ---
+    const qrWrapper = document.getElementById('qr-wrapper');
+    const connectBtn = document.getElementById('connect-btn');
+    let qrCheckInterval;
+
+    connectBtn.addEventListener('click', () => {
+        // Mostra o spinner e limpa o QR code antigo
+        qrWrapper.innerHTML = `
+            <div class="text-center">
+                <p class="text-muted">Gerando QR Code... Por favor, aguarde até 1 minuto.</p>
+                <div class="spinner-border text-success" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>`;
+
+        // Começa a verificar pela imagem do QR Code
+        if (qrCheckInterval) clearInterval(qrCheckInterval);
+        
+        // Dá um tempo para o backend iniciar o processo antes de começar a checar
+        setTimeout(() => {
+            qrCheckInterval = setInterval(fetchQrCode, 4000); // Verifica a cada 4 segundos
+        }, 5000);
+
+        // Para de verificar depois de 2 minutos para não ficar em loop infinito
+        setTimeout(() => {
+            if (qrCheckInterval) clearInterval(qrCheckInterval);
+        }, 120000);
+    });
+
+    async function fetchQrCode() {
+        try {
+            // Adiciona um timestamp para evitar o cache do navegador
+            const response = await fetch('/get_qrcode_image?' + new Date().getTime());
+            if (response.ok) {
+                const imageBlob = await response.blob();
+                const imageUrl = URL.createObjectURL(imageBlob);
+                qrWrapper.innerHTML = `<img src="${imageUrl}" alt="Escaneie com seu WhatsApp" class="img-fluid">`;
+                clearInterval(qrCheckInterval); // Para de verificar assim que encontra
+            }
+        } catch (error) {
+            // Silencioso, apenas continua tentando no próximo intervalo
+        }
+    }
+    
+    // --- SCRIPT DO CHAT (sem mudanças) ---
+    // ... (o código do chat continua aqui)
+</script>
+</body>
+</html>
