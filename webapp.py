@@ -19,40 +19,23 @@ from agents.user_agent import UserAgent
 from process_knowledge import reindex_knowledge_base
 
 # --- INICIALIZAÇÃO CORRIGIDA DO FLASK ---
+# Diz ao Flask para procurar as pastas a partir da pasta 'src'
 app = Flask(__name__,
-            template_folder=os.path.join(project_root, 'templates'), # Aponta para D:\projeto\templates
+            template_folder=os.path.join(project_root, 'src', 'templates'),
             static_folder=os.path.join(project_root, 'static'))
 # --- FIM DA CORREÇÃO ---
 
 app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'uma-chave-secreta-muito-segura')
 
+# ... (o resto do seu código webapp.py continua exatamente o mesmo)
+# ...
 config_manager = ConfigManager(config_paths=[os.path.join(project_root, 'config', 'default.yaml')])
 config = config_manager.get_all()
-
-print("Inicializando o Agente Kaleb...")
 user_agent = UserAgent("KalebWebApp", config)
 print("Agente Kaleb pronto!")
 
-chat_histories = {}
+# ... (resto das rotas)
 
-# --- ROTAS ---
-@app.route('/', methods=['GET', 'POST'])
-def dashboard():
-    current_config = config_manager.get_all()
-    kb_path = os.path.join(project_root, current_config.get('knowledge_base', {}).get('path', 'knowledge_base'))
-    os.makedirs(kb_path, exist_ok=True)
-    if request.method == 'POST':
-        # ... (lógica dos formulários)
-        return redirect(url_for('dashboard'))
-    knowledge_files = os.listdir(kb_path)
-    return render_template('dashboard.html', config=current_config, knowledge_files=knowledge_files)
-
-@app.route('/ask_kaleb', methods=['POST'])
-def ask_kaleb():
-    # ... (código do chat)
-    return jsonify({'response': '...'})
-
-# --- BLOCO PRINCIPAL ---
 if __name__ == '__main__':
     from waitress import serve
     serve(app, host='0.0.0.0', port=5001)
