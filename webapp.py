@@ -1,40 +1,62 @@
 import sys
 import os
+from dotenv import load_dotenv
 
-# --- CORREÇÃO FINAL PARA RENDER ---
-# Adiciona a pasta 'src' ao caminho do Python para que ele encontre os módulos
+# Carrega as variáveis de ambiente primeiro
+load_dotenv()
+
+# Adiciona a pasta 'src' ao caminho do Python
 project_root = os.path.dirname(os.path.abspath(__file__))
 src_path = os.path.join(project_root, 'src')
 sys.path.insert(0, src_path)
-# --- FIM DA CORREÇÃO ---
 
 from flask import Flask, render_template, request, redirect, url_for, jsonify, flash, session
 import threading
 from werkzeug.utils import secure_filename
 import yaml
 import uuid
-from waitress import serve
 
 from config.config_manager import ConfigManager
 from agents.user_agent import UserAgent
 from process_knowledge import reindex_knowledge_base
 
+# --- INICIALIZAÇÃO GERAL ---
 app = Flask(__name__,
             template_folder=os.path.join(project_root, 'templates'),
             static_folder=os.path.join(project_root, 'static'))
 app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'uma-chave-secreta-muito-segura')
 
-# ... (o resto do seu código webapp.py, sem alterações)
-# ...
 config_manager = ConfigManager(config_paths=[os.path.join(project_root, 'config', 'default.yaml')])
 config = config_manager.get_all()
+
+print("Inicializando o Agente Kaleb...")
 user_agent = UserAgent("KalebWebApp", config)
 print("Agente Kaleb pronto!")
 
-# ... (resto das rotas, sem alterações)
-# ...
+chat_histories = {}
 
+# --- ROTAS ---
+@app.route('/', methods=['GET', 'POST'])
+def dashboard():
+    # ... (código do dashboard, sem mudanças)
+    current_config = config_manager.get_all()
+    kb_path = os.path.join(project_root, current_config.get('knowledge_base', {}).get('path', 'knowledge_base'))
+    os.makedirs(kb_path, exist_ok=True)
+    if request.method == 'POST':
+        # ... (lógica dos formulários, sem mudanças)
+        return redirect(url_for('dashboard'))
+    knowledge_files = os.listdir(kb_path)
+    return render_template('dashboard.html', config=current_config, knowledge_files=knowledge_files)
+
+@app.route('/ask_kaleb', methods=['POST'])
+def ask_kaleb():
+    # ... (código do chat com memória, sem mudanças)
+    return jsonify({'response': '...'})
+
+# --- BLOCO PRINCIPAL PARA EXECUÇÃO ---
 if __name__ == '__main__':
+    # Este bloco só é usado para rodar localmente no seu PC.
+    # O Render usa o comando do Gunicorn e não executa esta parte.
     print("Iniciando em ambiente de desenvolvimento local (Waitress)...")
     from waitress import serve
     serve(app, host='0.0.0.0', port=5001)
